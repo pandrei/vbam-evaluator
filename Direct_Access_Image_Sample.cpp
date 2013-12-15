@@ -9,107 +9,159 @@
 //===========================================================================
 //===========================================================================
 #include "stdafx.h"
+#include <tesseract\baseapi.h>
+#include <leptonica\allheaders.h>
+#include <iostream>
+#include <stdlib.h>
+#include <strsafe.h>
 #include "Direct_Access_Image.h"
+#include <windows.h>
+#include <stdio.h>
+#include <conio.h>
+#include <string>
+#include <direct.h>
+#include<vector>
+using namespace std;
 //===========================================================================
 //===========================================================================
 
 //===========================================================================
 //===========================================================================
+
+vector<char*> exeList;
+TCHAR BAMdirectoryPath[MAX_PATH];
+
+int getExeFiles(_TCHAR* argv[]){
+
+	TCHAR path[MAX_PATH];
+	DWORD dwError=0;
+	HANDLE hFind = INVALID_HANDLE_VALUE;
+	WIN32_FIND_DATA ffd;
+	LARGE_INTEGER filesize;
+	string exe_extension = ".exe";	
+	
+	// Prepare string for use with FindFile functions.  First, copy the
+	// string to a buffer, then append '\*' to the directory name.
+	StringCchCopy(path, MAX_PATH, argv[1]);
+	StringCchCat(path, MAX_PATH, TEXT("\\*"));
+	hFind = FindFirstFile(path, &ffd);
+
+	if (INVALID_HANDLE_VALUE == hFind) 
+	{
+		//TODO handle error
+		return dwError;
+	} 
+   
+	
+
+	do
+	{
+		if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		{
+			//convert from wide char to narrow char array WCHAR=>char=>string
+			char ch[260];
+			char DefChar = ' ';
+			WideCharToMultiByte(CP_ACP,0,ffd.cFileName,-1, ch,260,&DefChar, NULL);			
+			string ss(ch);
+
+			if(ss.rfind(exe_extension)==ss.length()-4){
+				exeList.push_back(strdup(ch));			
+			}else{
+				continue;
+			}
+			
+			/*cout<<"|||"<<ch<<"||||\n";
+			cout<<ss.length()<<"\n";*/
+		}
+	
+	}while (FindNextFile(hFind, &ffd) != 0);
+ 
+	dwError = GetLastError();
+	if (dwError != ERROR_NO_MORE_FILES) 
+	{
+		cout<<"Received error: "<<dwError;
+		return dwError;
+	}
+
+	FindClose(hFind);
+	return 0;
+
+}
+
+int executeBAMS(char dir[]){
+
+	int i;
+
+	char exe[MAX_PATH];
+	char input[MAX_PATH];
+	char output[MAX_PATH];
+	char output_conf[MAX_PATH];
+	char cmd[500];
+	char filename[100];
+
+	for(i = 0; i<exeList.size();i++){
+		strcpy(exe,dir);
+		strcat(exe,"\\\\");
+		strcat(exe,exeList.at(i));
+
+		strcpy(cmd,exe);
+		strcat(cmd," ");
+
+		strcpy(input,dir);
+		strcat(input,"\\\\");
+		strcat(input,"in4_grayscale.tif");
+
+		strcat(cmd,input);
+		strcat(cmd, " ");
+
+		strcpy(output,dir);
+		strcat(output,"\\\\");
+		sprintf(filename,"out%d.tif",i+1);
+		strcat(output,filename);
+
+		strcat(cmd,output);
+		strcat(cmd, " ");
+
+		strcpy(output_conf,dir);
+		strcat(output_conf,"\\\\");
+		sprintf(filename,"out_conf%d.tif",i+1);
+		strcat(output_conf,filename);
+
+		strcat(cmd,output_conf);
+
+		cout<<"output: "<<output<<"\n\n";
+		cout<<"CMD: "<<cmd<<"\n\n";
+
+		int retCode = system(cmd);
+		cout<<"======================"<<retCode<<"\n\n";
+		
+	}
+
+	
+	
+	
+
+	return 0;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
+
 {
+	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();	
+	int i;
+	char dir[MAX_PATH];
+	char DefChar = ' ';
+
     //Verify command-line usage correctness
     if (argc != 2)
     {
-        _tprintf(_T("Use: %s <Input_Image_File_Name (24BPP True-Color)>\n"), argv[0]);
+        _tprintf(_T("Use: %s <BAM exe directory>\n"), argv[0]);
         return -1;
     }
-
-    //Buffer for the new file names
-    TCHAR strNewFileName[0x100];
-
-    //Load and verify that input image is a True-Color one
-    KImage *pImage = new KImage(argv[1]);
-    if (pImage == NULL || !pImage->IsValid() || pImage->GetBPP() != 24)
-    {
-        _tprintf(_T("File %s does is not a valid True-Color image!"), argv[0]);
-        return -2;
-    }
+	WideCharToMultiByte(CP_ACP,0,argv[1],-1, dir,260,&DefChar, NULL);	
+	getExeFiles(argv);
+	executeBAMS(dir);
 	
-    //Apply a Gaussian Blur with small radius to remove obvious noise
-    pImage->GaussianBlur(0.5);
-    _stprintf_s(strNewFileName, sizeof(strNewFileName) / sizeof(TCHAR), _T("%s_blurred.TIF"), argv[0]);
-    pImage->SaveAs(strNewFileName, SAVE_TIFF_LZW);
-
-    //Convert to grayscale
-    KImage *pImageGrayscale = pImage->ConvertToGrayscale();
-    //Don't forget to delete the original, now useless image
-    delete pImage;
-
-    //Verify conversion success...
-    if (pImageGrayscale == NULL || !pImageGrayscale->IsValid() || pImageGrayscale->GetBPP() != 8)
-    {
-        _tprintf(_T("Conversion to grayscale was not successfull!"));
-        return -3;
-    }
-    //... and save grayscale image
-    _stprintf_s(strNewFileName, sizeof(strNewFileName) / sizeof(TCHAR), _T("%s_grayscale.TIF"), argv[0]);
-    pImageGrayscale->SaveAs(strNewFileName, SAVE_TIFF_LZW);
-    
-    //Request direct access to image pixels in raw format
-    BYTE **pDataMatrixGrayscale = NULL;
-    if (pImageGrayscale->BeginDirectAccess() && (pDataMatrixGrayscale = pImageGrayscale->GetDataMatrix()) != NULL)
-    {
-        //If direct access is obtained get image attributes and start processing pixels
-        int intWidth = pImageGrayscale->GetWidth();
-        int intHeight = pImageGrayscale->GetHeight();
-
-        //Create binary image
-        KImage *pImageBinary = new KImage(intWidth, intHeight, 1);
-        if (pImageBinary->BeginDirectAccess())
-        {
-            //Apply a threshold at half the grayscale range (0x00 is Full-Black, 0xFF is Full-White, 0x80 is the Middle-Gray)
-            for (int y = intHeight - 1; y >= 0; y--)
-                for (int x = intWidth - 1; x >= 0; x--)
-                {
-                    //You may use this instead of the line below: 
-                    //    BYTE PixelAtXY = pImageGrayscale->Get8BPPPixel(x, y)
-                    BYTE &PixelAtXY = pDataMatrixGrayscale[y][x];
-                    if (PixelAtXY < 0x80)
-                        //...if closer to black, set to black
-                        pImageBinary->Put1BPPPixel(x, y, false);
-                    else
-                        //...if closer to white, set to white
-                        pImageBinary->Put1BPPPixel(x, y, true);
-                }
-
-            //Close direct access
-            pImageBinary->EndDirectAccess();
-            
-            //Save binarized image
-            _stprintf_s(strNewFileName, sizeof(strNewFileName) / sizeof(TCHAR), _T("%s_Black_and_White.TIF"), argv[0]);
-            pImageBinary->SaveAs(strNewFileName, SAVE_TIFF_CCITTFAX4);
-
-            //Don't forget to delete the binary image
-            delete pImageBinary;
-        }
-        else
-        {
-            _tprintf(_T("Unable to obtain direct access in binary image!"));
-            return -3;
-        }
-
-        //Close direct access
-        pImageGrayscale->EndDirectAccess();
-    }
-    else
-    {
-        _tprintf(_T("Unable to obtain direct access in grayscale image!"));
-        return -4;
-    }
-
-    //Don't forget to delete the grayscale image
-    delete pImageGrayscale;
-
     //Return with success
     return 0;
 }
