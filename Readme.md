@@ -23,13 +23,21 @@ Troubleshooting & requirements
 
 1) Check project properties(Visual Studio) for the 
    following configurations:
+		
 		- at C/C++ -> General -> Additional Include Directories
+
 		  tesseract\include must be present
+
 		- at Linker -> General -> Additional Library Directories
+
 		  tesseract\lib must be present
+
 		-at Linker -> Input -> Additional Dependencies
+
 		   liblept168.lib,
+
 		   libtesseract302.lib must be present
+		   
 
 2) Visual studio project expects to find the tesseract folder in root directory
 
