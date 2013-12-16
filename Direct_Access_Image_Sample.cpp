@@ -9,8 +9,8 @@
 //===========================================================================
 //===========================================================================
 #include "stdafx.h"
-#include <tesseract\baseapi.h>
-#include <leptonica\allheaders.h>
+#include "tesseract\include\tesseract\baseapi.h"
+#include "tesseract\include\leptonica\allheaders.h"
 #include <iostream>
 #include <stdlib.h>
 #include <strsafe.h>
@@ -38,7 +38,7 @@ int getTifFiles(_TCHAR* argv[]){
 	DWORD dwError=0;
 	HANDLE hFind = INVALID_HANDLE_VALUE;
 	WIN32_FIND_DATA ffd;
-	LARGE_INTEGER filesize;
+	//LARGE_INTEGER filesize;
 	string tif_extension = ".tif";	
 	tifList.clear();
 	
