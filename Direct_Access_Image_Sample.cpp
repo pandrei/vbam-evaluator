@@ -252,7 +252,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	getExeFiles(argv);
 	getTifFiles(argv);
 	executeBAMS(dir);
-	//tesseractOutput();
+	tesseractOutput();
 
 	//TODO: delete output files
 	
