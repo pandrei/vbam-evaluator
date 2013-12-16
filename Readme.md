@@ -6,8 +6,9 @@ Install steps
 1) Clone this repo
 
 
-2) Download tesseract.zip (We used https://docs.google.
-com/file/d/0B52jOwoWvqGyX0U3THFHZEJkMlk/edit)
+2) Download tesseract.zip 
+
+(We used https://docs.google.com/file/d/0B52jOwoWvqGyX0U3THFHZEJkMlk/edit)
 
 
 3) extract it in current directory(root folder)
@@ -33,7 +34,9 @@ Troubleshooting & requirements
 2) Visual studio project expects to find the tesseract folder in root directory
 
 
-3) Tesseract-OCR must be installed (we used https://code.google.com/p/tesseract-ocr/downloads/detail?name=tesseract-ocr-setup-3.01-1.exe&can=2&q )
+3) Tesseract-OCR must be installed 
+
+(we used https://code.google.com/p/tesseract-ocr/downloads/detail?name=tesseract-ocr-setup-3.01-1.exe&can=2&q )
 
 
 
