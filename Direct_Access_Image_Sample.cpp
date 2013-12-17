@@ -36,55 +36,56 @@ using namespace std;
  
  int getFiles(_TCHAR* argv[], string extension, vector<TCHAR*> & folderList){
  
-   TCHAR path[MAX_PATH];
-   DWORD dwError=0;
-   HANDLE hFind = INVALID_HANDLE_VALUE;
    WIN32_FIND_DATA ffd;
    LARGE_INTEGER filesize;
-   
+   TCHAR szDir[MAX_PATH];
+   size_t length_of_arg;
+   HANDLE hFind = INVALID_HANDLE_VALUE;
+   DWORD dwError=0;
+
+
+   // Check that the input path plus 3 is not longer than MAX_PATH.
+   // Three characters are for the "\*" plus NULL appended below.
+
+   StringCchLength(argv[1], MAX_PATH, &length_of_arg);
+
+   if (length_of_arg > (MAX_PATH - 3))
+   {
+      _tprintf(TEXT("\nDirectory path is too long.\n"));
+      return (-1);
+   }
+
    // Prepare string for use with FindFile functions.  First, copy the
    // string to a buffer, then append '\*' to the directory name.
-   StringCchCopy(path, MAX_PATH, argv[3]);
-   StringCchCat(path, MAX_PATH, TEXT("\\*"));
-   hFind = FindFirstFile(path, &ffd);
- 
+
+   StringCchCopy(szDir, MAX_PATH, argv[3]);
+   StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
+
+   // Find the first file in the directory.
+   hFind = FindFirstFile(szDir, &ffd);
    if (INVALID_HANDLE_VALUE == hFind) 
    {
-     //TODO handle error
-     return dwError;
+      return dwError;
    } 
-    
+
+   // List all the files in the directory with some info about them.
    do
    {
-     if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-     {
-       //convert from wide char to narrow char array WCHAR=>char=>string
-       char ch[260];
-       char DefChar = ' ';
-       WideCharToMultiByte(CP_ACP,0,ffd.cFileName,-1, ch,260,&DefChar, NULL);      
-       string ss(ch);
- 
-       if(ss.rfind(extension)==ss.length()-4){
-         folderList.push_back(strdup(ch));
-		 printf("file name = %s\n", ch);
-       }else{
-         continue;
-       }
-
-     }
-   
-   }while (FindNextFile(hFind, &ffd) != 0);
-  
-   dwError = GetLastError();
-   if (dwError != ERROR_NO_MORE_FILES) 
-   {
-     cout<<"Received error: "<<dwError;
-     return dwError;
+      if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+      {
+		  if(wcsstr(ffd.cFileName, L".exe")){
+			 _tprintf(TEXT("  %s   \n"), ffd.cFileName);
+			 exeList.push_back(ffd.cFileName);
+		  }
+      }
+      else
+      {
+		 continue;
+      }
    }
- 
+   while (FindNextFile(hFind, &ffd) != 0);
    FindClose(hFind);
-   return 0;
- 
+   return dwError;
  }
  
 
@@ -281,17 +282,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
    getFiles(argv, ".exe", exeList); //works fine.
-   image = GetStringFromArg(argv[4]); //works fine
-/*   printf("imagename is = %s\n", image);
-   printf("imagename is = %s\n", image);
-   printf("imagename is = %s\n", image);*/
-   cout << "imagename is " << image;
-  // cout << "imagename is " << image;
-  // cout << "imagename is " << image;
-   outDir = GetStringFromArg(argv[5]); //works fine
-   outImage = GetStringFromArg(argv[6]); //works fine
-   string imgstr(image);
-   printf("imgstr=%s\n", imgstr.c_str());
    //executeBAMS(exeList); // in progress
 /*
 
