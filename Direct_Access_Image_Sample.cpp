@@ -32,14 +32,13 @@ using namespace std;
  vector<char*> exeList;
  TCHAR BAMdirectoryPath[MAX_PATH];
  
- int getExeFiles(_TCHAR* argv[]){
+ int getFiles(_TCHAR* argv[], string extension, vector<char*> & folderList){
  
    TCHAR path[MAX_PATH];
    DWORD dwError=0;
    HANDLE hFind = INVALID_HANDLE_VALUE;
    WIN32_FIND_DATA ffd;
    LARGE_INTEGER filesize;
-   string exe_extension = ".exe";  
    
    // Prepare string for use with FindFile functions.  First, copy the
    // string to a buffer, then append '\*' to the directory name.
@@ -65,14 +64,12 @@ using namespace std;
        WideCharToMultiByte(CP_ACP,0,ffd.cFileName,-1, ch,260,&DefChar, NULL);      
        string ss(ch);
  
-       if(ss.rfind(exe_extension)==ss.length()-4){
-         exeList.push_back(strdup(ch));      
+       if(ss.rfind(extension)==ss.length()-4){
+         folderList.push_back(strdup(ch));      
        }else{
          continue;
        }
-       
-       /*cout<<"|||"<<ch<<"||||\n";
-       cout<<ss.length()<<"\n";*/
+
      }
    
    }while (FindNextFile(hFind, &ffd) != 0);
@@ -158,7 +155,7 @@ using namespace std;
      }
  
      // Open input image with leptonica library
-     Pix *image = pixRead("C:\\Users\\Daniela\\Desktop\\VBAM\\BAMexe\\in2_grayscale.tif");
+     Pix *image = pixRead("C:\Users\andrei\Documents\GitHub\vbam-evaluator\BAMexe\in4_grayscale.tif");
      api->SetImage(image);
      // Get OCR result
      outText = api->GetUTF8Text();
@@ -191,7 +188,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
    WideCharToMultiByte(CP_ACP,0,argv[1],-1, dir,260,&DefChar, NULL);  
-   getExeFiles(argv);
+   getFiles(argv, ".exe", exeList);
    executeBAMS(dir);
    tesseractOutput();
     //Return with success
