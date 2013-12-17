@@ -670,7 +670,7 @@ typedef void (DLL_CALLCONV *FI_InitProc)(Plugin *plugin, int format_id);
 #define HDR_DEFAULT			0
 #define ICO_DEFAULT         0
 #define ICO_MAKEALPHA		1		// convert to 32bpp and create an alpha channel from the AND-mask when loading
-#define IFF_DEFAULT         0
+//#define IFF_DEFAULT         0
 #define J2K_DEFAULT			0		// save with a 16:1 rate
 #define JP2_DEFAULT			0		// save with a 16:1 rate
 #define JPEG_DEFAULT        0		// loading (see JPEG_FAST); saving (see JPEG_QUALITYGOOD|JPEG_SUBSAMPLING_420)
