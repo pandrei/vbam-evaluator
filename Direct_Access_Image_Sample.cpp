@@ -31,10 +31,10 @@ using namespace std;
 //===========================================================================
 //===========================================================================
 
- vector<char*> exeList;
+ vector<TCHAR*> exeList;
  TCHAR BAMdirectoryPath[MAX_PATH];
  
- int getFiles(_TCHAR* argv[], string extension, vector<char*> & folderList){
+ int getFiles(_TCHAR* argv[], string extension, vector<TCHAR*> & folderList){
  
    TCHAR path[MAX_PATH];
    DWORD dwError=0;
