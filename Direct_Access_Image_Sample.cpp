@@ -29,7 +29,7 @@ using namespace std;
 //===========================================================================
 //===========================================================================
 
- vector<char*> exeList;
+ vector<char*> exeList, tifList;
  TCHAR BAMdirectoryPath[MAX_PATH];
  
  int getFiles(_TCHAR* argv[], string extension, vector<char*> & folderList){
@@ -52,8 +52,6 @@ using namespace std;
      return dwError;
    } 
     
-   
- 
    do
    {
      if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
@@ -141,7 +139,14 @@ using namespace std;
  
    return 0;
  }
- 
+
+ void determine_winner() {
+ }
+
+ void compute_best_image() {
+//we use peak-signal-to-noise ratio to determine winner
+
+ }
  
  int tesseractOutput(){
  
@@ -189,6 +194,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
    WideCharToMultiByte(CP_ACP,0,argv[1],-1, dir,260,&DefChar, NULL);  
    getFiles(argv, ".exe", exeList);
+   getFiles(argv, ".tif", tifList);
    executeBAMS(dir);
    tesseractOutput();
     //Return with success
