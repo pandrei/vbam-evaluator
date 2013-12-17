@@ -43,7 +43,7 @@ using namespace std;
    
    // Prepare string for use with FindFile functions.  First, copy the
    // string to a buffer, then append '\*' to the directory name.
-   StringCchCopy(path, MAX_PATH, argv[1]);
+   StringCchCopy(path, MAX_PATH, argv[3]);
    StringCchCat(path, MAX_PATH, TEXT("\\*"));
    hFind = FindFirstFile(path, &ffd);
  
@@ -64,7 +64,8 @@ using namespace std;
        string ss(ch);
  
        if(ss.rfind(extension)==ss.length()-4){
-         folderList.push_back(strdup(ch));      
+         folderList.push_back(strdup(ch));
+		 printf("file name = %s\n", ch);
        }else{
          continue;
        }
@@ -142,7 +143,7 @@ using namespace std;
  }
 
 
- void determinePNSR(char* filename, KImage *tessimage) {
+ float determinePNSR(char* filename, KImage *tessimage) {
 
 	 
     //Buffer for the new file names
@@ -201,6 +202,7 @@ using namespace std;
 			printf("pnsr = %f\n", pnsr);
 	 }
 }
+	return pnsr;
 }
  void determine_winner() {
  }
@@ -238,32 +240,40 @@ using namespace std;
  }
  
 
+char *GetStringFromArg(_TCHAR* arg) {
+	   char ch[260];
+       char DefChar = ' ';
+       WideCharToMultiByte(CP_ACP,0,arg,-1, ch,260,&DefChar, NULL);
+	   return ch;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 
    tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();  
    int i;
-   char dir[MAX_PATH];
-   char DefChar = ' ';
- 
+   char *image, *outDir, *outImage;
 
     //Verify command-line usage correctness
-    if (argc != 2)
+    if (argc != 7)
     {
-         _tprintf(_T("Use: %s <BAM exe directory>\n"), argv[0]);
+		_tprintf(_T("Use: %s <timeout1> <timeout2> <bam_dir> <img_name>  <output_dir> <rez_img_name>\n"), argv[0]);
         return -1;
     }
 
-   WideCharToMultiByte(CP_ACP,0,argv[1],-1, dir,260,&DefChar, NULL);  
-   getFiles(argv, ".exe", exeList);
-   getFiles(argv, ".tif", tifList);
+
+   getFiles(argv, ".exe", exeList); //works fine.
+   image = GetStringFromArg(argv[4]); //works fine
+   outDir = GetStringFromArg(argv[5]);
+   outImage = GetStringFromArg(argv[6]);
+  /* getFiles(argv, ".tif", tifList);
    executeBAMS(dir);
    tesseractOutput();
    TCHAR* tessfile = _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\out1.tif");
    KImage *tssImage = new KImage(tessfile);
    char *path= (char*) "C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\alin_lipan.tif";
    printf("path is %s\n", path);
-   determinePNSR(path, tssImage);
+   determinePNSR(path, tssImage);*/
     //Return with success
     return 0;
 }
