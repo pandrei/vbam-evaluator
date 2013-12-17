@@ -22,6 +22,7 @@
 #include <string>
 #include <direct.h>
 #include<vector>
+#include <math.h>  
 using namespace std;
 //===========================================================================
 //===========================================================================
@@ -140,6 +141,67 @@ using namespace std;
    return 0;
  }
 
+
+ void determinePNSR(char* filename, KImage *tessimage) {
+
+	 
+    //Buffer for the new file names
+    TCHAR strNewFileName[0x100];
+
+    //Load and verify that input image is a True-Color one
+	printf("filename is %s\n", filename);
+	TCHAR* fname =  _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\alin_lipan.tif"); //we can because we use unicode
+	_tprintf(_T("DEBUG STUB, FILENAME IS %s\n"), fname);
+    KImage *pImage = new KImage(fname);
+
+    //Request direct access to image pixels in raw format
+    BYTE **pDataMatrix= NULL;
+	BYTE **tessDataMatrix = NULL;
+	float pnsr, avg;
+	int sum = 0;
+    if ((pImage->BeginDirectAccess() && (pDataMatrix = pImage->GetDataMatrix()) != NULL) &
+		(tessimage->BeginDirectAccess() && (tessDataMatrix = tessimage->GetDataMatrix()) != NULL))
+    {
+        //If direct access is obtained get image attributes and start processing pixels
+        int intWidth = pImage->GetWidth();
+        int intHeight = pImage->GetHeight();
+		int tWidth = tessimage->GetWidth();
+		int tHeight = tessimage->GetHeight();
+		if( intWidth != tWidth || intHeight != tHeight) {
+			printf("SIZE MISSMATCH, PROGRAM FAILURE\n");
+			printf("intW, intH, tW, tH %d %d %d %d\n", intWidth, intHeight, tWidth, tHeight);
+			exit(-1);
+		}
+		if (pImage->BeginDirectAccess() && tessimage->BeginDirectAccess())
+        {
+            for (int y = intHeight - 1; y >= 0; y--)
+                for (int x = intWidth - 1; x >= 0; x--)
+                {
+                    //You may use this instead of the line below: 
+                    //    BYTE PixelAtXY = pImageGrayscale->Get8BPPPixel(x, y)
+                    BYTE &PixelAtXY = pDataMatrix[y][x];
+					BYTE &TPixelatXY = tessDataMatrix[y][x];
+					sum += ((int)(PixelAtXY - TPixelatXY))^2;
+                /*    if (PixelAtXY < 0x80)
+                        //...if closer to black, set to black
+                        pImageBinary->Put1BPPPixel(x, y, false);
+                    else
+                        //...if closer to white, set to white
+                        pImageBinary->Put1BPPPixel(x, y, true);
+				*/
+                }
+
+            //Close direct access
+            pImage->EndDirectAccess();
+			tessimage->EndDirectAccess();
+			avg = (float)sum / (intWidth * intHeight);
+			printf("sum = %d, divs = %d\n", sum, intWidth * intHeight);
+			printf("avg = %f\n", avg);
+			pnsr = 10 * log10f(255*255/avg);
+			printf("pnsr = %f\n", pnsr);
+	 }
+}
+}
  void determine_winner() {
  }
 
@@ -197,6 +259,11 @@ int _tmain(int argc, _TCHAR* argv[])
    getFiles(argv, ".tif", tifList);
    executeBAMS(dir);
    tesseractOutput();
+   TCHAR* tessfile = _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\out1.tif");
+   KImage *tssImage = new KImage(tessfile);
+   char *path= (char*) "C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\alin_lipan.tif";
+   printf("path is %s\n", path);
+   determinePNSR(path, tssImage);
     //Return with success
     return 0;
 }
