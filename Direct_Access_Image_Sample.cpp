@@ -22,7 +22,8 @@
 #include <string>
 #include <direct.h>
 #include<vector>
-#include <math.h>  
+#include <math.h>
+#include "Shlwapi.h"
 using namespace std;
 //===========================================================================
 //===========================================================================
@@ -30,7 +31,7 @@ using namespace std;
 //===========================================================================
 //===========================================================================
 
- vector<char*> exeList, tifList;
+ vector<char*> exeList;
  TCHAR BAMdirectoryPath[MAX_PATH];
  
  int getFiles(_TCHAR* argv[], string extension, vector<char*> & folderList){
@@ -86,7 +87,9 @@ using namespace std;
  
  }
  
- int executeBAMS(char dir[]){
+
+
+ int executeBAMS(vector<char*> dir){
  
    int i;
  
@@ -96,7 +99,7 @@ using namespace std;
    char output_conf[MAX_PATH];
    char cmd[500];
    char filename[100];
- 
+ /*
    for(i = 0; i<exeList.size();i++){
      strcpy(exe,dir);
      strcat(exe,"\\\\");
@@ -136,7 +139,7 @@ using namespace std;
    }
  
    
-   
+   */
    
  
    return 0;
@@ -247,12 +250,27 @@ char *GetStringFromArg(_TCHAR* arg) {
 	   return ch;
 }
 
+char* getFilename(string path){
+  string filename;
+  
+  size_t pos = path.find_last_of("\\");
+  if(pos != std::string::npos)
+    filename.assign(path.begin() + pos + 1, path.end());
+  else
+    filename = path;
+  
+  char *result = new char[filename.length() + 1];
+  printf("getfilename %s\n", path.c_str());
+  strcpy(result, filename.c_str());
+  return result;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 
    tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();  
    int i;
-   char *image, *outDir, *outImage;
+   char *image, *outDir, *outImage, *imagename;
 
     //Verify command-line usage correctness
     if (argc != 7)
@@ -264,10 +282,19 @@ int _tmain(int argc, _TCHAR* argv[])
 
    getFiles(argv, ".exe", exeList); //works fine.
    image = GetStringFromArg(argv[4]); //works fine
-   outDir = GetStringFromArg(argv[5]);
-   outImage = GetStringFromArg(argv[6]);
-  /* getFiles(argv, ".tif", tifList);
-   executeBAMS(dir);
+/*   printf("imagename is = %s\n", image);
+   printf("imagename is = %s\n", image);
+   printf("imagename is = %s\n", image);*/
+   cout << "imagename is " << image;
+  // cout << "imagename is " << image;
+  // cout << "imagename is " << image;
+   outDir = GetStringFromArg(argv[5]); //works fine
+   outImage = GetStringFromArg(argv[6]); //works fine
+   string imgstr(image);
+   printf("imgstr=%s\n", imgstr.c_str());
+   //executeBAMS(exeList); // in progress
+/*
+
    tesseractOutput();
    TCHAR* tessfile = _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\out1.tif");
    KImage *tssImage = new KImage(tessfile);
