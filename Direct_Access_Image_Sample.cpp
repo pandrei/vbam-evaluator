@@ -92,13 +92,15 @@ using namespace std;
 
  int executeBAMS(vector<TCHAR*> bamList,TCHAR* dir, TCHAR* inFile, TCHAR* imgname, DWORD time){
 	int i;
-	LPDWORD exitcode;
+	LPDWORD exitcode = 0;
 	STARTUPINFO procStartupInfo;
 	PROCESS_INFORMATION procInfo;
 	
 	for(i = 0; i < bamList.size(); i++) {
+
 		TCHAR *dest, *cmd;
 		dest = _tcscpy(new TCHAR[_tcslen(dir) + _tcslen(bamList.at(i)) +1], dir);
+		_tcscat(dest, _T("\\"));
 		_tcscat(dest, bamList.at(i));
 		_tprintf(_T("Complete Path = %s\n"), dest);
 		// path-to-exec path-to-image exec_name.image_name.tiff |exec_name.image_name.conf.tiff
@@ -107,6 +109,7 @@ using namespace std;
 		_tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".tiff ")); 
 		_tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".conf")); _tcscat(cmd, _T(".tiff ")); 
 		_tprintf(_T("Complete cmd = %s\n"), cmd);
+		
 		CreateProcess(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &procStartupInfo, &procInfo);
 		WaitForSingleObject(procInfo.hProcess, INFINITE); //TODO: CHANGE Infinite to proper value(ca in t1/t2);
 		GetExitCodeProcess(procInfo.hProcess, exitcode); //now we get process exitcode
@@ -127,7 +130,7 @@ using namespace std;
 
     //Load and verify that input image is a True-Color one
 	printf("filename is %s\n", filename);
-	TCHAR* fname =  _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\alin_lipan.tif"); //we can because we use unicode
+	TCHAR* fname =  _T("C:\\Users\Daniela\\Desktop\\VBAM\\vbam-evaluator\\BAMexe\\alin_lipan.tif"); //we can because we use unicode
 	_tprintf(_T("DEBUG STUB, FILENAME IS %s\n"), fname);
     KImage *pImage = new KImage(fname);
 
@@ -269,7 +272,7 @@ int _tmain(int argc, _TCHAR* argv[])
    _tprintf(_T("img_name = %s\n"), inputimg_name);
   
    executeBAMS(exeList, argv[3], inputimg_path, inputimg_name, 0); // in progress
-   tesseractOutput(inputimg_path);
+   //tesseractOutput(inputimg_path);
 
  
   /* TCHAR* tessfile = _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\out1.tif");
