@@ -31,7 +31,24 @@ using namespace std;
 //===========================================================================
 //===========================================================================
 
+
+
+class BAMresult {
+    TCHAR *resultImg;
+	TCHAR *confImg;
+		public:
+		BAMresult (TCHAR *,TCHAR *);
+};
+
+BAMresult::BAMresult (TCHAR * a, TCHAR * b) {
+  resultImg = a;
+  confImg = b;
+}
+
+
+
  vector<TCHAR*> exeList;
+ vector<BAMresult> bamResults;
  TCHAR BAMdirectoryPath[MAX_PATH];
  
  int getFiles(_TCHAR* argv[], string extension, vector<TCHAR*> & folderList){
@@ -92,9 +109,13 @@ using namespace std;
 
  int executeBAMS(vector<TCHAR*> bamList,TCHAR* dir, TCHAR* inFile, TCHAR* imgname, DWORD time){
 	int i;
-	LPDWORD exitcode = 0;
+	DWORD exitcode = 9999;
 	STARTUPINFO procStartupInfo;
 	PROCESS_INFORMATION procInfo;
+
+	ZeroMemory(&procStartupInfo, sizeof(procStartupInfo));	
+	procStartupInfo.cb = sizeof(procStartupInfo);
+	ZeroMemory(&procStartupInfo, sizeof(procStartupInfo));
 	
 	for(i = 0; i < bamList.size(); i++) {
 
@@ -106,15 +127,19 @@ using namespace std;
 		// path-to-exec path-to-image exec_name.image_name.tiff |exec_name.image_name.conf.tiff
 		cmd = _tcscpy(new TCHAR[_tcslen(dest) + 1 + _tcslen(inFile) + 1 + 2 * (_tcslen(bamList.at(i)) + 1 + _tcsclen(imgname)) + 20], dest); //da, am calculat !
 		_tcscat(cmd, _T(" ")); _tcscat(cmd, inFile); _tcscat(cmd, _T(" "));
-		_tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".tiff ")); 
-		_tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".conf")); _tcscat(cmd, _T(".tiff ")); 
+		_tcscat (cmd, _T("C:\\\\Users\\\\Daniela\\\\Desktop\\\\")); _tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".tif ")); 
+		//TODO: uncomment
+		//_tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".conf")); _tcscat(cmd, _T(".tif ")); 
 		_tprintf(_T("Complete cmd = %s\n"), cmd);
 		
-		CreateProcess(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &procStartupInfo, &procInfo);
+
+		CreateProcess(NULL, cmd, NULL, NULL, FALSE, 0, NULL, NULL, &procStartupInfo, &procInfo);
 		WaitForSingleObject(procInfo.hProcess, INFINITE); //TODO: CHANGE Infinite to proper value(ca in t1/t2);
-		GetExitCodeProcess(procInfo.hProcess, exitcode); //now we get process exitcode
+		GetExitCodeProcess(procInfo.hProcess, &exitcode); //now we get process exitcode
 		CloseHandle(procInfo.hProcess);
 		CloseHandle(procInfo.hThread);
+
+		cout<<"\nI maed smth\n";
 
 	}
  
@@ -271,7 +296,7 @@ int _tmain(int argc, _TCHAR* argv[])
    _tcscat(inputimg_name, inputimg_extension);
    _tprintf(_T("img_name = %s\n"), inputimg_name);
   
-   executeBAMS(exeList, argv[3], inputimg_path, inputimg_name, 0); // in progress
+	executeBAMS(exeList, argv[3], inputimg_path, inputimg_name, 0); // in progress
    //tesseractOutput(inputimg_path);
 
  
