@@ -74,8 +74,8 @@ using namespace std;
       if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
       {
 		  if(wcsstr(ffd.cFileName, L".exe")){
-			 _tprintf(TEXT("  %s   \n"), ffd.cFileName);
-			 exeList.push_back(ffd.cFileName);
+			  _tprintf(TEXT("  %s   \n"), ffd.cFileName);
+			 exeList.push_back(_tcsdup(ffd.cFileName));
 		  }
       }
       else
@@ -90,58 +90,28 @@ using namespace std;
  
 
 
- int executeBAMS(vector<char*> dir){
- 
-   int i;
- 
-   char exe[MAX_PATH];
-   char input[MAX_PATH];
-   char output[MAX_PATH];
-   char output_conf[MAX_PATH];
-   char cmd[500];
-   char filename[100];
- /*
-   for(i = 0; i<exeList.size();i++){
-     strcpy(exe,dir);
-     strcat(exe,"\\\\");
-     strcat(exe,exeList.at(i));
- 
-     strcpy(cmd,exe);
-     strcat(cmd," ");
- 
-     strcpy(input,dir);
-     strcat(input,"\\\\");
-     strcat(input,"in4_grayscale.tif");
- 
-     strcat(cmd,input);
-     strcat(cmd, " ");
- 
-     strcpy(output,dir);
-     strcat(output,"\\\\");
-     sprintf(filename,"out%d.tif",i+1);
-     strcat(output,filename);
- 
-     strcat(cmd,output);
-     strcat(cmd, " ");
- 
-     strcpy(output_conf,dir);
-     strcat(output_conf,"\\\\");
-     sprintf(filename,"out_conf%d.tif",i+1);
-     strcat(output_conf,filename);
- 
-     strcat(cmd,output_conf);
- 
-     cout<<"output: "<<output<<"\n\n";
-     cout<<"CMD: "<<cmd<<"\n\n";
- 
-     int retCode = system(cmd);
-     cout<<"======================"<<retCode<<"\n\n";
-     
-   }
- 
-   
-   */
-   
+ int executeBAMS(vector<TCHAR*> bamList,TCHAR* dir, TCHAR* inFile, TCHAR* imgname, DWORD time){
+	int i;
+	STARTUPINFO procStartupInfo;
+	PROCESS_INFORMATION procInfo;
+	
+	for(i = 0; i < bamList.size(); i++) {
+		TCHAR *dest, *cmd;
+		dest = _tcscpy(new TCHAR[_tcslen(dir) + _tcslen(bamList.at(i)) +1], dir);
+		_tcscat(dest, bamList.at(i));
+		_tprintf(_T("Complete Path = %s\n"), dest);
+		// path-to-exec path-to-image exec_name.image_name.tiff |exec_name.image_name.conf.tiff
+		cmd = _tcscpy(new TCHAR[_tcslen(dest) + 1 + _tcslen(inFile) + 1 + 2 * (_tcslen(bamList.at(i)) + 1 + _tcsclen(imgname)) + 20], dest); //da, am calculat !
+		_tcscat(cmd, _T(" ")); _tcscat(cmd, inFile); _tcscat(cmd, _T(" "));
+		_tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".tiff ")); 
+		_tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".conf")); _tcscat(cmd, _T(".tiff ")); 
+		_tprintf(_T("Complete cmd = %s\n"), cmd);
+		CreateProcess(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &procStartupInfo, &procInfo);
+		WaitForSingleObject(procInfo.hProcess, INFINITE); //TODO: CHANGE Infinite to proper value(ca in t1/t2);
+		CloseHandle(procInfo.hProcess);
+		CloseHandle(procInfo.hThread);
+
+	}
  
    return 0;
  }
@@ -271,7 +241,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
    tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();  
    int i;
-   char *image, *outDir, *outImage, *imagename;
+   TCHAR inputimg_name[256], inputimg_extension[256];
 
     //Verify command-line usage correctness
     if (argc != 7)
@@ -282,7 +252,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
    getFiles(argv, ".exe", exeList); //works fine.
-   //executeBAMS(exeList); // in progress
+   TCHAR *inputimg_path = _tcscpy (new TCHAR[_tcslen(argv[4]) + 1], argv[4]);
+   _tprintf(_T("img_name = %s\n"), inputimg_path);
+   _wsplitpath(inputimg_path, NULL, NULL, inputimg_name,inputimg_extension);
+   _tcscat(inputimg_name, inputimg_extension);
+   _tprintf(_T("img_name = %s\n"), inputimg_name);
+  
+   executeBAMS(exeList, argv[3], inputimg_path, inputimg_name, 0); // in progress
 /*
 
    tesseractOutput();
