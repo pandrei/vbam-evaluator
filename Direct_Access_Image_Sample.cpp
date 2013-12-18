@@ -92,6 +92,7 @@ using namespace std;
 
  int executeBAMS(vector<TCHAR*> bamList,TCHAR* dir, TCHAR* inFile, TCHAR* imgname, DWORD time){
 	int i;
+	LPDWORD exitcode;
 	STARTUPINFO procStartupInfo;
 	PROCESS_INFORMATION procInfo;
 	
@@ -108,6 +109,7 @@ using namespace std;
 		_tprintf(_T("Complete cmd = %s\n"), cmd);
 		CreateProcess(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &procStartupInfo, &procInfo);
 		WaitForSingleObject(procInfo.hProcess, INFINITE); //TODO: CHANGE Infinite to proper value(ca in t1/t2);
+		GetExitCodeProcess(procInfo.hProcess, exitcode); //now we get process exitcode
 		CloseHandle(procInfo.hProcess);
 		CloseHandle(procInfo.hThread);
 
