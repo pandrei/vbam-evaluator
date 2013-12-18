@@ -120,16 +120,33 @@ BAMresult::BAMresult (TCHAR * a, TCHAR * b) {
 	for(i = 0; i < bamList.size(); i++) {
 
 		TCHAR *dest, *cmd;
+		TCHAR filename[256];
+		TCHAR filename2[256];
 		dest = _tcscpy(new TCHAR[_tcslen(dir) + _tcslen(bamList.at(i)) +1], dir);
 		_tcscat(dest, _T("\\"));
 		_tcscat(dest, bamList.at(i));
 		_tprintf(_T("Complete Path = %s\n"), dest);
 		// path-to-exec path-to-image exec_name.image_name.tiff |exec_name.image_name.conf.tiff
-		cmd = _tcscpy(new TCHAR[_tcslen(dest) + 1 + _tcslen(inFile) + 1 + 2 * (_tcslen(bamList.at(i)) + 1 + _tcsclen(imgname)) + 20], dest); //da, am calculat !
+		cmd = _tcscpy(new TCHAR[_tcslen(dest) + 1 + _tcslen(inFile) + 1 + 2 * (_tcslen(bamList.at(i)) + 1 + _tcsclen(imgname)) + 20+256], dest); //da, am calculat !
 		_tcscat(cmd, _T(" ")); _tcscat(cmd, inFile); _tcscat(cmd, _T(" "));
-		_tcscat (cmd, _T("C:\\\\Users\\\\Daniela\\\\Desktop\\\\")); _tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".tif ")); 
-		//TODO: uncomment
-		//_tcscat(cmd, bamList.at(i)); _tcscat(cmd, _T(".")); _tcscat(cmd, imgname); _tcscat(cmd, _T(".conf")); _tcscat(cmd, _T(".tif ")); 
+		
+		_tcscpy (filename, _T("C:\\\\Users\\\\Daniela\\\\Desktop\\\\VBAM\\\\")); 
+		_tcscat(filename, bamList.at(i)); 
+		_tcscat(filename, _T(".")); 
+		_tcscat(filename, imgname); 
+		_tcscat(filename, _T(".tif ")); 
+		_tcscat(cmd, filename);
+		
+		
+		_tcscpy(filename2,_T("C:\\\\Users\\\\Daniela\\\\Desktop\\\\VBAM\\\\")); 
+		_tcscat(filename2, bamList.at(i)); 
+		_tcscat(filename2, _T(".")); 
+		_tcscat(filename2, imgname);
+		_tcscat(filename2, _T(".conf")); 
+		_tcscat(filename2, _T(".tif ")); 
+		_tcscat(cmd,filename2);
+
+
 		_tprintf(_T("Complete cmd = %s\n"), cmd);
 		
 
@@ -141,6 +158,7 @@ BAMresult::BAMresult (TCHAR * a, TCHAR * b) {
 
 		cout<<"\nI maed smth\n";
 
+		bamResults.push_back(BAMresult(filename,filename2));
 	}
  
    return 0;
@@ -211,8 +229,58 @@ BAMresult::BAMresult (TCHAR * a, TCHAR * b) {
  void determine_winner() {
  }
 
- void compute_best_image() {
+ void compute_best_image(char* filepath, KImage *tess) {
 //we use peak-signal-to-noise ratio to determine winner
+	 KImage *filemg = new KImage(filepath);
+	 int i;
+	 float pnsrvars[] = new float[bamResults.size()]();
+	 for(i = 0; i < bamResults.size(); i++) {
+		 pnsrvars[i] = determinePNSR(bamResults.at(i), tess);
+
+	 }
+	 float pnsrvar = determinePNSR(filepath, tess);
+	 
+	   //Request direct access to image pixels in raw format
+    BYTE **pDataMatrix= NULL;
+	BYTE **tessDataMatrix = NULL;
+	float pnsr, avg;
+	int sum = 0;
+    if ((pImage->BeginDirectAccess() && (pDataMatrix = pImage->GetDataMatrix()) != NULL) &
+		(tess->BeginDirectAccess() && (tessDataMatrix = tessimage->GetDataMatrix()) != NULL))
+    {
+        //If direct access is obtained get image attributes and start processing pixels
+        int intWidth = pImage->GetWidth();
+        int intHeight = pImage->GetHeight();
+		int tWidth = tessimage->GetWidth();
+		int tHeight = tessimage->GetHeight();
+		if( intWidth != tWidth || intHeight != tHeight) {
+			printf("SIZE MISSMATCH, PROGRAM FAILURE\n");
+			printf("intW, intH, tW, tH %d %d %d %d\n", intWidth, intHeight, tWidth, tHeight);
+			exit(-1);
+		}
+		if (pImage->BeginDirectAccess() && tessimage->BeginDirectAccess())
+        {
+            for (int y = intHeight - 1; y >= 0; y--)
+                for (int x = intWidth - 1; x >= 0; x--)
+                {
+                    //You may use this instead of the line below: 
+                    //    BYTE PixelAtXY = pImageGrayscale->Get8BPPPixel(x, y)
+                    BYTE &PixelAtXY = pDataMatrix[y][x];
+					BYTE &TPixelatXY = tessDataMatrix[y][x];
+					sum += ((int)(PixelAtXY - TPixelatXY))^2;
+                /*    if (PixelAtXY < 0x80)
+                        //...if closer to black, set to black
+                        pImageBinary->Put1BPPPixel(x, y, false);
+                    else
+                        //...if closer to white, set to white
+                        pImageBinary->Put1BPPPixel(x, y, true);
+				*/
+                }
+
+            //Close direct access
+            pImage->EndDirectAccess();
+			tessimage->EndDirectAccess();
+	
 
  }
  
@@ -297,7 +365,7 @@ int _tmain(int argc, _TCHAR* argv[])
    _tprintf(_T("img_name = %s\n"), inputimg_name);
   
 	executeBAMS(exeList, argv[3], inputimg_path, inputimg_name, 0); // in progress
-   //tesseractOutput(inputimg_path);
+    tesseractOutput(inputimg_path);
 
  
   /* TCHAR* tessfile = _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\out1.tif");

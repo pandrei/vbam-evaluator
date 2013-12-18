@@ -1,4 +1,4 @@
-﻿Build started 18.12.2013 14:06:05.
+﻿Build started 18.12.2013 14:31:03.
      1>Project "C:\Users\Daniela\Desktop\VBAM\vbam-evaluator\Direct_Access_Image_Sample.vcxproj" on node 2 (Rebuild target(s)).
      1>_PrepareForClean:
          Deleting file "Debug\Direct_Access_Image_Sample.lastbuildstate".
@@ -26,35 +26,59 @@
      1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(54): warning C4100: 'folderList' : unreferenced formal parameter
      1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(57): warning C4101: 'filesize' : unreferenced local variable
      1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(120): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(123): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(125): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1025) : see declaration of 'wcscpy'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(124): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(126): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(125): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(127): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(128): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(130): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1025) : see declaration of 'wcscpy'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(129): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(131): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(130): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(133): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1025) : see declaration of 'wcscpy'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(134): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(135): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(136): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(137): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(138): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(141): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1025) : see declaration of 'wcscpy'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(142): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(143): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(144): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(145): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(146): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(147): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
      1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(110): warning C4100: 'time' : unreferenced formal parameter
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(158): warning C4129: 'D' : unrecognized character escape sequence
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(154): warning C4101: 'strNewFileName' : unreferenced local variable
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(259): warning C4172: returning address of local variable or temporary
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(273): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(176): warning C4129: 'D' : unrecognized character escape sequence
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(172): warning C4101: 'strNewFileName' : unreferenced local variable
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(277): warning C4172: returning address of local variable or temporary
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(291): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(293): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(311): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1025) : see declaration of 'wcscpy'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(295): warning C4996: '_wsplitpath': This function or variable may be unsafe. Consider using _wsplitpath_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(313): warning C4996: '_wsplitpath': This function or variable may be unsafe. Consider using _wsplitpath_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(985) : see declaration of '_wsplitpath'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(296): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(314): warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\wchar.h(1018) : see declaration of 'wcscat'
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(281): warning C4101: 'i' : unreferenced local variable
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(280): warning C4189: 'api' : local variable is initialized but not referenced
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(299): warning C4101: 'i' : unreferenced local variable
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(298): warning C4189: 'api' : local variable is initialized but not referenced
          Direct_Access_Image.cpp
          Generating Code...
-     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(209): warning C4701: potentially uninitialized local variable 'pnsr' used
+     1>c:\users\daniela\desktop\vbam\vbam-evaluator\direct_access_image_sample.cpp(227): warning C4701: potentially uninitialized local variable 'pnsr' used
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Daniela\Desktop\VBAM\vbam-evaluator\Debug\Direct_Access_Image_Sample.exe" /INCREMENTAL /NOLOGO /LIBPATH:tesseract\lib liblept168.lib libtesseract302.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Daniela\Desktop\VBAM\vbam-evaluator\Debug\Direct_Access_Image_Sample.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Daniela\Desktop\VBAM\vbam-evaluator\Debug\Direct_Access_Image_Sample.lib" /MACHINE:X86 Debug\Direct_Access_Image.obj
          Debug\Direct_Access_Image_Sample.obj
@@ -67,4 +91,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.57
+Time Elapsed 00:00:03.37
