@@ -186,7 +186,7 @@ using namespace std;
 
  }
  
- int tesseractOutput(){
+ int tesseractOutput(TCHAR* imagepath){
  
      char *outText;
  
@@ -198,7 +198,13 @@ using namespace std;
      }
  
      // Open input image with leptonica library
-     Pix *image = pixRead("C:\Users\andrei\Documents\GitHub\vbam-evaluator\BAMexe\in4_grayscale.tif");
+    // Pix *image = pixRead("C:\Users\andrei\Documents\GitHub\vbam-evaluator\BAMexe\in4_grayscale.tif");
+	 //TODO TESSERACT TCHAR TO CHAR conversion is fucked, we need to fix it
+	 //=======================================================================
+	 char *imgpath;
+	 imgpath = (char*) imagepath;
+	 printf("imgpath = %s\n", imgpath);
+	 Pix *image = pixRead(imgpath);  
      api->SetImage(image);
      // Get OCR result
      outText = api->GetUTF8Text();
@@ -208,7 +214,7 @@ using namespace std;
      api->End();
      delete [] outText;
      pixDestroy(&image);
- 
+	 //=======================================================================
      return 0;
  
  }
@@ -259,10 +265,10 @@ int _tmain(int argc, _TCHAR* argv[])
    _tprintf(_T("img_name = %s\n"), inputimg_name);
   
    executeBAMS(exeList, argv[3], inputimg_path, inputimg_name, 0); // in progress
-/*
+   tesseractOutput(inputimg_path);
 
-   tesseractOutput();
-   TCHAR* tessfile = _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\out1.tif");
+ 
+  /* TCHAR* tessfile = _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\out1.tif");
    KImage *tssImage = new KImage(tessfile);
    char *path= (char*) "C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\alin_lipan.tif";
    printf("path is %s\n", path);
