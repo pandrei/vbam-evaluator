@@ -186,6 +186,7 @@ using namespace std;
 
  }
  
+
  int tesseractOutput(TCHAR* imagepath){
  
      char *outText;
@@ -201,8 +202,9 @@ using namespace std;
     // Pix *image = pixRead("C:\Users\andrei\Documents\GitHub\vbam-evaluator\BAMexe\in4_grayscale.tif");
 	 //TODO TESSERACT TCHAR TO CHAR conversion is fucked, we need to fix it
 	 //=======================================================================
-	 char *imgpath;
-	 imgpath = (char*) imagepath;
+	 char *imgpath = new char [_tcsclen(imagepath) + 1]();
+	 //imgpath = (char*) imagepath;
+	 WideCharToMultiByte(CP_ACP, 0, imagepath, _tcsclen(imagepath), imgpath, _tcsclen(imagepath) + 1, NULL, FALSE); 
 	 printf("imgpath = %s\n", imgpath);
 	 Pix *image = pixRead(imgpath);  
      api->SetImage(image);
