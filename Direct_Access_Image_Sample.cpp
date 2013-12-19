@@ -34,9 +34,10 @@ using namespace std;
 
 
 class BAMresult {
-    TCHAR *resultImg;
-	TCHAR *confImg;
+
 		public:
+	    TCHAR *resultImg;
+		TCHAR *confImg;
 		BAMresult (TCHAR *,TCHAR *);
 };
 
@@ -145,18 +146,13 @@ BAMresult::BAMresult (TCHAR * a, TCHAR * b) {
 		_tcscat(filename2, _T(".conf")); 
 		_tcscat(filename2, _T(".tif ")); 
 		_tcscat(cmd,filename2);
-
-
-		_tprintf(_T("Complete cmd = %s\n"), cmd);
-		
+	
 
 		CreateProcess(NULL, cmd, NULL, NULL, FALSE, 0, NULL, NULL, &procStartupInfo, &procInfo);
 		WaitForSingleObject(procInfo.hProcess, INFINITE); //TODO: CHANGE Infinite to proper value(ca in t1/t2);
 		GetExitCodeProcess(procInfo.hProcess, &exitcode); //now we get process exitcode
 		CloseHandle(procInfo.hProcess);
 		CloseHandle(procInfo.hThread);
-
-		cout<<"\nI maed smth\n";
 
 		bamResults.push_back(BAMresult(filename,filename2));
 	}
@@ -165,17 +161,14 @@ BAMresult::BAMresult (TCHAR * a, TCHAR * b) {
  }
 
 
- float determinePNSR(char* filename, KImage *tessimage) {
+ float determinePNSR(TCHAR* filename, KImage *tessimage) {
 
 	 
     //Buffer for the new file names
     TCHAR strNewFileName[0x100];
 
     //Load and verify that input image is a True-Color one
-	printf("filename is %s\n", filename);
-	TCHAR* fname =  _T("C:\\Users\Daniela\\Desktop\\VBAM\\vbam-evaluator\\BAMexe\\alin_lipan.tif"); //we can because we use unicode
-	_tprintf(_T("DEBUG STUB, FILENAME IS %s\n"), fname);
-    KImage *pImage = new KImage(fname);
+    KImage *pImage = new KImage(filename);
 
     //Request direct access to image pixels in raw format
     BYTE **pDataMatrix= NULL;
@@ -229,62 +222,96 @@ BAMresult::BAMresult (TCHAR * a, TCHAR * b) {
  void determine_winner() {
  }
 
- void compute_best_image(char* filepath, KImage *tess) {
+ KImage* compute_best_image(TCHAR* filepath, KImage *tess) {
 //we use peak-signal-to-noise ratio to determine winner
-	 KImage *filemg = new KImage(filepath);
-	 int i;
-	 float pnsrvars[] = new float[bamResults.size()]();
-	 for(i = 0; i < bamResults.size(); i++) {
-		 pnsrvars[i] = determinePNSR(bamResults.at(i), tess);
-
+	 
+	 int i,j;
+	 int w = tess->GetWidth();
+	 int h = tess->GetHeight();
+	 KImage *output = new KImage(w, h, 1);
+	 float* pnsrvars = new float[bamResults.size()]();
+	 int** ZeroMatconf =new int*[h]();
+	 int** OneMatconf =new int*[h]();
+	 float **zeropnsrMat = new float*[h]();
+	 float **onepnsrMat = new float*[h]();
+	 for (i = 0; i < h; i++) {
+		 ZeroMatconf[i] = new int[w];
+		 OneMatconf[i] = new int[w];
+		 zeropnsrMat[i] = new float[w];
+		 onepnsrMat[i] = new float[w];
 	 }
-	 float pnsrvar = determinePNSR(filepath, tess);
+	 for (i = 0; i < h; i++) {
+		for(j = 0; j < w; j++) {
+			ZeroMatconf[i][j] = 0;
+			OneMatconf[i][j] = 0;
+			zeropnsrMat[i][j] = 0;
+			onepnsrMat[i][j] = 0;
+		}
+	}
+	 float zeroConf, oneConf;
+	 float pnsrZero = 0;
+	 float pnsrOne = 0;
+	 for(i = 0; i < bamResults.size(); i++) {
+		 pnsrvars[i] = determinePNSR(bamResults.at(i).resultImg, tess);
+		 KImage *confimg = new KImage(bamResults.at(i).confImg);
+
 	 
 	   //Request direct access to image pixels in raw format
-    BYTE **pDataMatrix= NULL;
-	BYTE **tessDataMatrix = NULL;
+    BYTE **resDataMatrix= NULL;
+	BYTE **confDataMatrix = NULL;
 	float pnsr, avg;
-	int sum = 0;
-    if ((pImage->BeginDirectAccess() && (pDataMatrix = pImage->GetDataMatrix()) != NULL) &
-		(tess->BeginDirectAccess() && (tessDataMatrix = tessimage->GetDataMatrix()) != NULL))
+
+
+	KImage *resimg = new KImage(bamResults.at(i).resultImg);
+
+    if ((resimg->BeginDirectAccess() && (resDataMatrix = resimg->GetDataMatrix()) != NULL) &
+		(confimg->BeginDirectAccess() && (confDataMatrix = confimg->GetDataMatrix()) != NULL))
     {
         //If direct access is obtained get image attributes and start processing pixels
-        int intWidth = pImage->GetWidth();
-        int intHeight = pImage->GetHeight();
-		int tWidth = tessimage->GetWidth();
-		int tHeight = tessimage->GetHeight();
+        int intWidth = resimg->GetWidth();
+        int intHeight = resimg->GetHeight();
+		int tWidth = confimg->GetWidth();
+		int tHeight = confimg->GetHeight();
 		if( intWidth != tWidth || intHeight != tHeight) {
 			printf("SIZE MISSMATCH, PROGRAM FAILURE\n");
 			printf("intW, intH, tW, tH %d %d %d %d\n", intWidth, intHeight, tWidth, tHeight);
 			exit(-1);
 		}
-		if (pImage->BeginDirectAccess() && tessimage->BeginDirectAccess())
+		if (resimg->BeginDirectAccess() && confimg->BeginDirectAccess())
         {
             for (int y = intHeight - 1; y >= 0; y--)
                 for (int x = intWidth - 1; x >= 0; x--)
                 {
                     //You may use this instead of the line below: 
                     //    BYTE PixelAtXY = pImageGrayscale->Get8BPPPixel(x, y)
-                    BYTE &PixelAtXY = pDataMatrix[y][x];
-					BYTE &TPixelatXY = tessDataMatrix[y][x];
-					sum += ((int)(PixelAtXY - TPixelatXY))^2;
-                /*    if (PixelAtXY < 0x80)
-                        //...if closer to black, set to black
-                        pImageBinary->Put1BPPPixel(x, y, false);
-                    else
-                        //...if closer to white, set to white
-                        pImageBinary->Put1BPPPixel(x, y, true);
-				*/
+                    BYTE &PixelAtXY = resDataMatrix[y][x];
+					BYTE &TPixelatXY = confDataMatrix[y][x];
+					if(PixelAtXY == 0x00) {
+						ZeroMatconf[y][x] = ZeroMatconf[y][x] + TPixelatXY;
+						zeropnsrMat[y][x] = zeropnsrMat[y][x] + pnsrvars[i];
+					} else {
+						OneMatconf[y][x] = OneMatconf[y][x] + TPixelatXY;
+						onepnsrMat[y][x] = onepnsrMat[y][x] + pnsrvars[i];
+					}
                 }
 
+		}
             //Close direct access
-            pImage->EndDirectAccess();
-			tessimage->EndDirectAccess();
-	
-
+				resimg->EndDirectAccess();
+				confimg->EndDirectAccess();
+		 }
+	 }
+	for (int x = 0; x < h; x++ ) {
+		for(int y = 0 ; y < w; y++ ) {
+			if ((ZeroMatconf[x][y] * zeropnsrMat[x][y]) > (OneMatconf[x][y] * onepnsrMat[x][y])) {
+				output->Put1BPPPixel(x, y, false);
+			} else {
+				output->Put1BPPPixel(x, y, true);
+				}
+		}
+	}
+	return output;
  }
- 
-
  int tesseractOutput(TCHAR* imagepath){
  
      char *outText;
@@ -364,15 +391,14 @@ int _tmain(int argc, _TCHAR* argv[])
    _tcscat(inputimg_name, inputimg_extension);
    _tprintf(_T("img_name = %s\n"), inputimg_name);
   
-	executeBAMS(exeList, argv[3], inputimg_path, inputimg_name, 0); // in progress
-    tesseractOutput(inputimg_path);
-
+	executeBAMS(exeList, argv[3], inputimg_path, inputimg_name, 0);
  
   /* TCHAR* tessfile = _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\out1.tif");
    KImage *tssImage = new KImage(tessfile);
-   char *path= (char*) "C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\alin_lipan.tif";
-   printf("path is %s\n", path);
-   determinePNSR(path, tssImage);*/
+   TCHAR *path= _T("C:\\Users\\andrei\\Documents\\GitHub\\vbam-evaluator\\BAMexe\\alin_lipan.tif");
+   tesseractOutput(argv[4]);
+   KImage *result = compute_best_image(argv[3], tssImage); 
+   */
     //Return with success
     return 0;
 }
